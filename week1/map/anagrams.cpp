@@ -23,4 +23,5 @@ int main() {
 		cin >> a >> b;
 		checkItOutFool(a, b);	
 	}
+	return (0);
 }
