@@ -18,9 +18,9 @@ class Person {
 			if (fn == -1 && ln == -1)
 				return ("Incognito");
 			if (ln == -1)
-				return (fname[fn] + " with unknown first name");
+				return (fname[fn] + " with unknown last name");
 			else if (fn == -1)
-				return (lname[ln] + " with unknown last name");
+				return (lname[ln] + " with unknown first name");
 			return (fname[fn] + " " + lname[ln]);
 		}
 	private:
