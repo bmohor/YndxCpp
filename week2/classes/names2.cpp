@@ -55,12 +55,11 @@ class Person {
 							res += " (" + hist[0] + ")";
 						hist.clear();
 					} else if (hist.size() > 1) {
-					
+						if (hist[0] == res)
+							hist.erase(hist.begin());
 						int HistSize = hist.size();
 						res += " (";
 						for (int i = 0; i < HistSize; i++) {
-//							if (hist[i] == "\0")
-//								continue ;
 							if (i + 1 == HistSize) {
 								res += hist[i] + ")";
 								break ;
