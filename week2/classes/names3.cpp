@@ -1,7 +1,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <iostream>
 using namespace std;
 
 int	findNearest(const map<int, string>& tmp, int year, int yob) {
