@@ -4,8 +4,8 @@ using namespace std;
 class Rational {
 	public:
 		Rational() {
-			int num;
-			int den;
+			num = 0;
+			den = 1;
 		}
 		Rational(int numerator, int denominator) {
 			int x = numerator;
