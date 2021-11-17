@@ -42,10 +42,19 @@ ostream& operator<<(ostream& stream, Rational x) {
 }
 
 istream& operator>>(istream& stream, Rational& x) {
+	if (!stream)
+		return stream;
+	char c;
 	int xx, yy;
 	stream >> xx;
-	stream.ignore(1);
+	stream >> c;
+	if (c != '/') {
+		stream >> yy;
+		return stream;
+	}
 	stream >> yy;
+	if (!stream)
+		return stream;
 	Rational y(xx, yy);
 	x = y;
 	return stream;
@@ -60,7 +69,6 @@ int main() {
             return 1;
         }
     }
-
     {
         istringstream input("5/7");
         Rational r;
@@ -71,7 +79,6 @@ int main() {
             return 2;
         }
     }
-
     {
         istringstream input("");
         Rational r;
@@ -81,7 +88,6 @@ int main() {
             return 3;
         }
     }
-
     {
         istringstream input("5/7 10/8");
         Rational r1, r2;
@@ -111,11 +117,9 @@ int main() {
         if (!correct) {
             cout << "Reading of incorrectly formatted rationals shouldn't change arguments: "
                  << r1 << " " << r2 << " " << r3 << endl;
-
-            return 6;
-        }
+	    return 6;
+	}
     }
-
     cout << "OK" << endl;
     return 0;
 }
