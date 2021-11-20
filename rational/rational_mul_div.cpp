@@ -2,46 +2,58 @@
 using namespace std;
 
 class Rational {
-	public:
-		Rational() {
-			num = 0;
-			den = 1;
-		}
-		Rational(int numerator, int denominator) {
-			num = numerator;
-			den = denominator;
-			while (numerator > 0 && denominator > 0) {
-				if (numerator > denominator)
-					numerator %= denominator;
-				else
-					denominator %= numerator;
-			}
-			int same = numerator + denominator;
-			num /= same;
-			den /= same;	
-		}
-		int Numerator() {
-			return num;
-		}
-		int Denominator() {
-			return den;
-		}	
-	private:
-		int num;
-		int den;
+public:
+    Rational() {
+	    num = 0;
+	    den = 1;
+    }
+
+    Rational(int numerator, int denominator) {
+	int x = abs(numerator);
+	int y = abs(denominator);
+	while (x > 0 && y > 0) {
+		if (x > y)
+			x %= y;
+		else
+			y %= x;
+	}
+	int same = x + y;
+	num = numerator / same;
+	den = denominator / same;
+	if (num < 0 && den < 0) {
+		num = abs(num);
+		den = abs(den);
+	}
+	if (den < 0) {
+		num *= -1;
+		den = abs(den);
+	}
+    }
+
+    int Numerator() const {
+	    return (num);
+    }
+
+    int Denominator() const {
+	    return (den);
+    }
+
+private:
+    int num;
+    int den;
 };
 
 bool	operator==(Rational x, Rational y) {
 	return ((x.Numerator() == y.Numerator()) && (x.Denominator() == y.Denominator()));
 }
 
-Rational	operator*(Rational& x, Rational& y) {
+Rational	operator*(Rational x, Rational y) {
 	int resx = x.Numerator() * y.Numerator();
 	int resy = x.Denominator() * y.Denominator();
 	return {resx, resy};
 }
 
-Rational	operator/(Rational& x, Rational& y) {
+Rational	operator/(Rational x, Rational y) {
 	int resx = x.Numerator() * y.Denominator();
 	int resy = x.Denominator() * y.Numerator();
 	return {resx, resy};

@@ -9,8 +9,8 @@ public:
     }
 
     Rational(int numerator, int denominator) {
-	int x = numerator;
-	int y = denominator;
+	int x = abs(numerator);
+	int y = abs(denominator);
 	while (x > 0 && y > 0) {
 		if (x > y)
 			x %= y;
@@ -20,6 +20,14 @@ public:
 	int same = x + y;
 	num = numerator / same;
 	den = denominator / same;
+	if (num < 0 && den < 0) {
+		num = abs(num);
+		den = abs(den);
+	}
+	if (den < 0) {
+		num *= -1;
+		den = abs(den);
+	}
     }
 
     int Numerator() const {

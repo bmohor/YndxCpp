@@ -2,37 +2,49 @@
 using namespace std;
 
 class Rational {
-	public:
-		Rational() {
-			num = 0;
-			den = 1;
-		}
-		Rational(int numerator, int denominator) {
-			int x = numerator;
-			int y = denominator;
-			while (x > 0 && y > 0) {
-				if (x > y)
-					x %= y;
-				else
-					y %= x;
-			}
-			int same = x + y;
-			num = numerator / same;
-			den = denominator / same;
-		}
-		int	Numerator() {
-			return num;
-		}
-		int	Denominator() {
-			return den;
-		}
-	private:
-		int num;
-		int den;
-		
+public:
+    Rational() {
+	    num = 0;
+	    den = 1;
+    }
+
+    Rational(int numerator, int denominator) {
+	int x = abs(numerator);
+	int y = abs(denominator);
+	while (x > 0 && y > 0) {
+		if (x > y)
+			x %= y;
+		else
+			y %= x;
+	}
+	int same = x + y;
+	num = numerator / same;
+	den = denominator / same;
+	if (num < 0 && den < 0) {
+		num = abs(num);
+		den = abs(den);
+	}
+	if (den < 0) {
+		num *= -1;
+		den = abs(den);
+	}
+    }
+
+    int Numerator() const {
+	    return (num);
+    }
+
+    int Denominator() const {
+	    return (den);
+    }
+
+private:
+    int num;
+    int den;
 };
 
-Rational	operator+(Rational& x, Rational& y) {
+
+Rational	operator+(Rational x, Rational y) {
 	int resx, resy;
 	if (y.Denominator() == x.Denominator()) {
 		resx = y.Numerator() + x.Numerator();
@@ -50,10 +62,10 @@ bool	operator==(Rational x, Rational y) {
 }
 
 
-Rational	operator-(Rational& x, Rational& y) {
+Rational	operator-(Rational x, Rational y) {
 	int resx, resy;
 	if (y.Denominator() == x.Denominator()) {
-		resx = y.Numerator() - x.Numerator();
+		resx = x.Numerator() - y.Numerator();
 		resy = x.Denominator();
 	} else {
 		resx = x.Numerator() * y.Denominator() - y.Numerator() * x.Denominator();
