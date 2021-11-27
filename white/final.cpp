@@ -56,7 +56,7 @@ class Database {
 					return 1;
 				}
 			}
-			throw std::invalid_argument("Event not found");
+			std::cout << "Event not found" << std::endl;
 			return 0;
 		}
 		int  DeleteDate(const Date& date) {
@@ -80,106 +80,83 @@ class Database {
 		}
 		void Print() const {
 			for (const auto& i : clndr) {
-				std::cout.fill('0');
-				std::cout << std::setw(4) << i.first.GetYear();
-				std::cout << '-';
-				std::cout << std::setw(2) << i.first.GetMonth();
-				std::cout << '-';
-				std::cout << std::setw(2) << i.first.GetDay();
-				for (const auto& j : i.second)
+				for (const auto& j : i.second) {
+					std::cout.fill('0');
+					std::cout << std::setw(4) << i.first.GetYear();
+					std::cout << '-';
+					std::cout << std::setw(2) << i.first.GetMonth();
+					std::cout << '-';
+					std::cout << std::setw(2) << i.first.GetDay();
 					std::cout << ' ' << j;
-				std::cout << std::endl;
+					std::cout << std::endl;
+				}
 			}
 		}
 	private:
 		std::map<Date, std::set<std::string>> clndr;
 };
-void	checkdig(char& tmp, std::string res) {
-	std::string event;
-	if (std::cin.peek() == '+' || std::cin.peek() == '-') {
-		std::cin >> tmp;
-		res += tmp;
-	}
-	if (isdigit(std::cin.peek()) == 0) {
-		std::string t;
-		std::cin >> t;
-		res += t;
-		getline(std::cin, event);
-		throw std::invalid_argument("Wrong date format: " + res);
-	}
-}
-void	dataCheck(int& a, int& b, int& c, int code) {
-	std::string res;
-	char x, z, tmp;
-	std::string event;
-	std::cin.ignore(1);
-	checkdig(tmp, res);
-	std::cin >> a;
-	res += std::to_string(a);
-	if (tmp == '-')
-		a*= -1;
-	tmp = '+';
-	std::cin >> x;
-	res += x;
-	checkdig(tmp, res);	
-	std::cin >> b;
-	res += std::to_string(b);
-	if (tmp == '-')
-		b *= -1;
-	tmp = '+';
-	std::cin >> z;
-	res += z;
-	checkdig(tmp, res);
-	std::cin >> c;
-	res += std::to_string(c);
-	if (tmp == '-')
-		c *= -1;
-	if (code == 1 && (std::cin.peek() != ' ' || x != '-' || z != '-')) {
-		if (std::cin.peek() != '\n' || x != '-' || z != '-') {
-			std::string tmp;
-			std::string t = "";
-			if (std::cin.peek() != ' ') {
-				if (std::cin.peek() != '\n')
-					std::cin >> t;
-			}
-			tmp = std::to_string(a) + x + std::to_string(b) + z + std::to_string(c) + t;
-			getline(std::cin, event);
-			throw std::invalid_argument("Wrong date format: " + tmp);
+
+void	dataCheck(int (&nums)[3], int code) {
+	int count = 0;
+	std::string event, str;
+	std::cin >> str;
+	for (int i = 0; str[i] != '\0'; i++) {
+		std::string num = "";
+		int minus = 0;
+		if (str[i] == '-' || str[i] == '+') {
+			if (str[i] == '-')
+				minus = 1;
+			i++;
 		}
-	} else if (std::cin.peek() != ' ' || x != '-' || z != '-') {
-		std::string tmp;
-		std::string t = "";	
-		if (std::cin.peek() != ' ') {
-			if (std::cin.peek() != '\n')
-				std::cin >> t;
+		if (isdigit(str[i]) == 0)
+			throw std::invalid_argument("Wrong date format: " + str);
+		while (isdigit(str[i]) != 0 && str[i] != '\0') {
+			num += str[i];
+			i++;
 		}
-		tmp = std::to_string(a) + x + std::to_string(b) + z + std::to_string(c) + t;
-		getline(std::cin, event);
-		throw std::invalid_argument("Wrong date format: " + tmp);
+		nums[count] = std::stoi(num);
+		if (minus == 1)
+			nums[count] *= -1;
+		count++;
+		if (count == 3) {
+			if (str.size() > i)
+				throw std::invalid_argument("Wrong date format: " + str);
+			break;
+		}
+		if (str[i] == '\0')
+			break;
+		if (str[i] != '-')
+			throw std::invalid_argument("Wrong date format: " + str);
 	}
-	if (b < 1 || b > 12) {
-		getline(std::cin, event);
-		throw std::invalid_argument("Month value is invalid: " + std::to_string(b));
+	if (count != 3)
+		throw std::invalid_argument("Wrong date format: " + str);
+	if (std::cin.peek() != ' ') {
+		if (std::cin.peek() != '\n')
+			throw std::invalid_argument("Wrong date format: " + str);
 	}
-	if (c < 1 || c > 31) {
+	if (nums[1] < 1 || nums[1] > 12) {
 		getline(std::cin, event);
-		throw std::invalid_argument("Day value is invalid: " + std::to_string(c));
+		throw std::invalid_argument("Month value is invalid: " + std::to_string(nums[1]));
+	}
+	if (nums[2] < 1 || nums[2] > 31) {
+		getline(std::cin, event);
+		throw std::invalid_argument("Day value is invalid: " + std::to_string(nums[2]));
 	}
 }	
 
 void findMe(Database& db) {
-	int a, b, c;
+	int nums[3];
 	std::string event;
-	dataCheck(a, b, c, 1);
-	Date date(a, b, c);
+	dataCheck(nums, 2);
+	Date date(nums[0], nums[1], nums[2]);
 	db.Find(date);
 }
 
 void del(Database& db) {
-	int a, b, c;
+	int nums[3];
 	std::string event;
-	dataCheck(a, b, c, 1);
-	Date date(a, b, c);
+	dataCheck(nums, 1);
+	Date date(nums[0], nums[1], nums[2]);
 	if (std::cin.peek() == '\n') {
 		int res = db.DeleteDate(date);
 		std::cout << "Deleted " << res << " events" << std::endl;
@@ -191,10 +168,10 @@ void del(Database& db) {
 }
 
 void add(Database& db) {
-	int a, b, c;
+	int nums[3];
 	std::string event;
-	dataCheck(a, b, c, 0);
-	Date date(a, b, c);
+	dataCheck(nums, 0);
+	Date date(nums[0], nums[1], nums[2]);
 	std::cin >> event;
 	db.AddEvent(date, event);
 }
@@ -203,9 +180,8 @@ int main() {
 	Database db;
 	
 	std::string command;
-	while (1) {
+	while (std::cin >> command) {
 		try {
-			std::cin >> command;
 			if (command == "\0")
 				continue;
 			else if (command == "Add")
