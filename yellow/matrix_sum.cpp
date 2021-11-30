@@ -71,39 +71,45 @@ std::istream&	operator>>(std::istream& stream, Matrix& x) {
 	}
 	return stream;
 }
-/*
-Matrix			operator+(Matrix &x, Matrix &y) {
+
+Matrix			operator+(const Matrix &x, const Matrix &y) {
 	int rows = x.GetNumRows();
 	int cols = x.GetNumCols();
-
+	if (rows != y.GetNumRows() || cols != y.GetNumCols())
+		throw std::invalid_argument("invalid argument");
+	Matrix newMatrix(rows, cols);
+	for (int i = 0; i < rows; i++) {
+		for (int j = 0; j < cols; j++) {
+			newMatrix.At(i, j) = x.Atc(i, j) + y.Atc(i, j);
+		}
+	}
+	return newMatrix;
 }
-*/
-std::ostream&	operator<<(std::ostream& stream, Matrix& x) {
+
+bool		operator==(Matrix& x, Matrix& y) {
+	int rows = x.GetNumRows();
+	int cols = x.GetNumCols();
+	if (rows != y.GetNumRows() || cols != y.GetNumCols())
+		return false;	
+	for(int i = 0; i < rows; i++) {
+		for(int j = 0; j < cols; j++) {
+			if (x.Atc(i, j) != y.Atc(i, j))
+				return false;
+		}
+	}
+	return true;
+}
+
+std::ostream&	operator<<(std::ostream& stream, const Matrix& x) {
 	int rows = x.GetNumRows();
 	int cols = x.GetNumCols();
 	stream << rows << ' ' << cols << std::endl;
 	for (int i = 0; i < rows; i++) {
-		for (int j = 0; j < cols; i++){
+		for (int j = 0; j < cols; j++){
 			stream << x.Atc(i, j) << ' ';
 		}
-		stream << std::endl;
+		if ((i + 1) != rows)
+			stream << std::endl;
 	}
 	return stream;
-}
-int main() {
-
-	std::vector< std::vector<int> > matrix;
-	Matrix one;
-	one.Resett(5, 5);
-	try {
-		std::cout << one.Atc(4, 4);
-	} catch(std::out_of_range& ex) {
-		std::cout << ex.what() <<std::endl;
-	}
-
-//	std::cin >> one >> two;
-//	std::cout << one << std::endl;
-//	std::cout << two << std::endl;
-//	std::cout << one + two << std::endl;
-	return 0;
 }
